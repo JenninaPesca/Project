@@ -231,7 +231,7 @@ public class StreamParser implements Parser {
 //			System.out.println("	chiamo tryNext");
 			tryNext();
 //			System.out.println("	chiamo parseExp");
-			exp = new LogicAnd(exp, parseEquality());
+			exp = new And(exp, parseEquality());
 		}
 //		System.out.println("FINE (StreamParser) parseExp exp di tipo Prefix: "+ exp);
 		return exp;
@@ -241,7 +241,7 @@ public class StreamParser implements Parser {
 		Exp exp = parsePrefix();
 		while (tokenizer.tokenType() == EQUALITY) {
 			tryNext();
-			exp = new Equality(exp, parsePrefix());
+			exp = new Eq(exp, parsePrefix());
 		}
 		return exp;
 	}

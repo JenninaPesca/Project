@@ -1,8 +1,8 @@
 package interpreter.visitors.evaluation;
 
-public class IntValue extends PrimValue<Integer> {
+public class BoolValue extends PrimValue<Boolean> {
 
-	public IntValue(Integer value) {
+	public BoolValue(boolean value) {
 		super(value);
 	}
 
@@ -10,13 +10,13 @@ public class IntValue extends PrimValue<Integer> {
 	public final boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof IntValue))
+		if (!(obj instanceof BoolValue))
 			return false;
-		return value.equals(((IntValue) obj).value);
+		return value.equals(((BoolValue) obj).value);
 	}
 
 	@Override
-	public int asInt() {
+	public boolean asBool() {
 		return value;
 	}
 }

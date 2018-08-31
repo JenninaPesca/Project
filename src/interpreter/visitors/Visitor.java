@@ -7,7 +7,6 @@ import interpreter.parser.ast.Stmt;
 import interpreter.parser.ast.StmtSeq;
 
 public interface Visitor<T> {
-	T visitAdd(Exp left, Exp right);
 
 	T visitAssignStmt(Ident ident, Exp exp);
 
@@ -25,6 +24,7 @@ public interface Visitor<T> {
 	
 	T visitIntLiteral(int value);
 
+	
 	T visitListLiteral(ExpSeq exps);
 
 	T visitMoreExp(Exp first, ExpSeq rest);
@@ -39,10 +39,7 @@ public interface Visitor<T> {
 	
 	T visitEq(Exp left, Exp right); //fatto da me
 	/*operatori unari*/
-	T visitSign(Exp exp);
-	
-	T visitNot(Exp exp); //fatto da me
-	
+		
 	T visitOpt(Exp exp); //fatto da me
 	
 	T visitEmpty(Exp exp); //fatto da me
@@ -51,8 +48,6 @@ public interface Visitor<T> {
 	
 	T visitGet(Exp exp); //fatto da me
 	/*sequence of exp*/	
-	T visitSingleExp(Exp exp);
-
 	T visitPrintStmt(Exp exp);
 
 	T visitProg(StmtSeq stmtSeq);
