@@ -16,7 +16,10 @@ Prog ::= StmtSeq 'EOF'
  Add ::= Mul ('+' Add)* | Mul
  Mul::= Atom ('*' Mul)* | Atom
  Atom ::= '-' Atom | '!' Atom | 'opt' Atom | 'empty' Atom | 'def' Atom | 'get' Atom | '[' ExpSeq ']' | BOOL | BIN | NUM | ID  | '(' Exp ')'
- */
+ 
+ //modifica: Equality nome adeguato a ==??
+ //controlla: grammatica corretta?
+*/
 
 public class StreamParser implements Parser {
 
@@ -121,6 +124,7 @@ public class StreamParser implements Parser {
 			return parseIfElseStmt();
 		case DO:
 			System.out.println("             caso do");
+
 			return parseDoWhileStmt();
 		/*fatto da me fine*/
 		}
@@ -193,13 +197,13 @@ public class StreamParser implements Parser {
 		consume(OPEN_BLOCK);
 		StmtSeq stmts = parseStmtSeq();
 		consume(CLOSE_BLOCK);
-		if(tokenizer.tokenType() == ELSE) {
+		/*if(tokenizer.tokenType() == ELSE) {
 			tryNext();
 			consume(OPEN_BLOCK);
 			StmtSeq stmts2 = parseStmtSeq();
 			consume(CLOSE_BLOCK);
-			return new IfThenElseStmt(exp, stmts, stmts2);
-		}
+			return new IfElseStmt(exp, stmts, stmts2);
+		}*/
 		return new IfThenStmt(exp, stmts);
 	}
 	
@@ -227,7 +231,7 @@ public class StreamParser implements Parser {
 //			System.out.println("	chiamo tryNext");
 			tryNext();
 //			System.out.println("	chiamo parseExp");
-			exp = new And(exp, parseEquality());
+			exp = new LogicAnd(exp, parseEquality());
 		}
 //		System.out.println("FINE (StreamParser) parseExp exp di tipo Prefix: "+ exp);
 		return exp;

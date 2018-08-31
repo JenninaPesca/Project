@@ -31,8 +31,6 @@ public class StreamTokenizer implements Tokenizer {
 	}
 
 	static {
-		keywords.put("true", BOOL); //fatto da me-- aggiungo la keyword true
-		keywords.put("false", BOOL); //fatto da me-- aggiungo la keyword false
 		keywords.put("for", FOR);
 		keywords.put("print", PRINT);
 		keywords.put("var", VAR);
@@ -49,7 +47,7 @@ public class StreamTokenizer implements Tokenizer {
 	static {
 		symbols.put("&&", LOGICAND);
 		symbols.put("==", EQUALITY);
-		symbols.put("!", NOT);
+		symbols.put("!", BANG);
 		symbols.put("+", PLUS);
 		symbols.put("*", TIMES);
 		symbols.put("::", PREFIX);
@@ -84,7 +82,6 @@ public class StreamTokenizer implements Tokenizer {
 //			System.out.println("FINE (StreamTokenizer) checkType ident"); //CANCELLA
 			return;
 		}
-
 		/*fatto da me inizio*/
 		if (scanner.group(BOOL.ordinal()) != null) { // NUM
 			tokenType = BOOL;
@@ -169,7 +166,6 @@ public class StreamTokenizer implements Tokenizer {
 	/*fatto da me fine*/
 	@Override
 	public int intValue() {
-=======
 //		System.out.println("INIZIO (StreamTokenizer) intValue"); //CANCELLA
 //		System.out.println(" 	chiamo checkvalidtoken con num"); //CANCELLA
 		checkValidToken(NUM);
