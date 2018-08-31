@@ -16,7 +16,7 @@ public interface Visitor<T> {
 	
 	T visitIdent(String name);
 	
-	T visitBoolLiteral(boolean value); //fatto da me v
+	T visitBoolLiteral(boolean value); //fatto da me
 	/*operatori binari*/
 	T visitAdd(Exp left, Exp right);
 	
@@ -24,13 +24,13 @@ public interface Visitor<T> {
 
 	T visitPrefix(Exp left, Exp right);
 	
-	T visitAnd(Exp left, Exp right); //fatto da me v
+	T visitAnd(Exp left, Exp right); //fatto da me
 	
-	T visitEq(Exp left, Exp right); //fatto da me v
+	T visitEq(Exp left, Exp right); //fatto da me
 	/*operatori unari*/
 	T visitSign(Exp exp);
 	
-	T visitNot(Exp exp); //fatto da me v
+	T visitNot(Exp exp); //fatto da me
 	
 	T visitOpt(Exp exp); //fatto da me
 	

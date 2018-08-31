@@ -6,8 +6,6 @@ public interface Tokenizer extends AutoCloseable {
 
 	String tokenString();
 
-	int binValue();
-	
 	int intValue();
 
 	TokenType tokenType();

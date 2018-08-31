@@ -33,23 +33,8 @@ public class TypeCheck implements Visitor<Type> {
 		return null;
 	}
 	
-	public Type visitIfThenElseStmt(Exp exp, StmtSeq then_seq, StmtSeq else_seq) {
-		visitIfThenStmt(exp, then_seq);
-		env.enterLevel();
-		else_seq.accept(this);
-		env.exitLevel();
-		return null;
-	}
-	
-	public Type visitDoWhileStmt(StmtSeq block, Exp exp) {
-		env.enterLevel();
-		block.accept(this);
-		env.exitLevel();
-		BOOL.checkEqual(exp.accept(this)); 	//BOOL.checkEqual(exp.accept(this).getListElemType());
-		return null;	
-	}
-	
-/*fatto da me fine*/
+	// static semantics of expressions; a type is returned by the visitor
+	/*literal*/
 	@Override
 	public Type visitListLiteral(ExpSeq exps) {
 		return new ListType(exps.accept(this));
