@@ -15,17 +15,19 @@ public class StreamTokenizer implements Tokenizer {
 									// token
 	private TokenType tokenType;
 	private String tokenString;
+	private boolean boolValue;
 	private int intValue;
 	private final Scanner scanner;
 
 	static {
 		// remark: groups must correspond to the ordinal of the corresponding
 		// token type
+  	final String boolRegEx = "true | false"; //controlla: espressione regolare da fare o no???
 		final String identRegEx = "([a-zA-Z][a-zA-Z0-9]*)"; // group 1
 		final String numRegEx = "(0|[1-9][0-9]*)"; // group 2
 		final String skipRegEx = "(\\s+|//.*)"; // group 3
 		final String symbolRegEx = "\\+|\\*|==|=|&&|!|\\(|\\)|;|,|\\{|\\}|-|::|:|\\[|\\]";
-		regEx = identRegEx + "|" + numRegEx + "|" + skipRegEx + "|" + symbolRegEx;
+		regEx = boolRegEx + "|" + identRegEx + "|" + numRegEx + "|" + skipRegEx + "|" + symbolRegEx;
 	}
 
 	static {
@@ -45,7 +47,7 @@ public class StreamTokenizer implements Tokenizer {
 	static {
 		symbols.put("&&", LOGICAND);
 		symbols.put("==", EQUALITY);
-		symbols.put("!", NOT);
+		symbols.put("!", BANG);
 		symbols.put("+", PLUS);
 		symbols.put("*", TIMES);
 		symbols.put("::", PREFIX);
@@ -80,6 +82,14 @@ public class StreamTokenizer implements Tokenizer {
 //			System.out.println("FINE (StreamTokenizer) checkType ident"); //CANCELLA
 			return;
 		}
+		/*fatto da me inizio*/
+		if (scanner.group(BOOL.ordinal()) != null) { // NUM
+			tokenType = BOOL;
+			boolValue = Boolean.parseBoolean(tokenString);
+			System.out.println("       boolVallue: "+boolValue);
+			System.out.println("FINE (StreamTokenizer) checkType num"); //CANCELLA
+			return;
+		}/*fatto da me fine*/
 		//System.out.println(" 	chiamo scanner.group con "+ NUM.ordinal()); //CANCELLA
 		if (scanner.group(NUM.ordinal()) != null) { // NUM
 			tokenType = NUM;
@@ -106,6 +116,7 @@ public class StreamTokenizer implements Tokenizer {
 			tokenType = null;
 			tokenString = "";
 			try {
+				//osserva: caso eof, perch� non lo prende??
 				if (hasNext && !scanner.hasNext()) {
 					System.out.println("EOF");
 					hasNext = false;
@@ -145,7 +156,13 @@ public class StreamTokenizer implements Tokenizer {
 //		System.out.println("FINE (StreamTokenizer) tokenString"); //CANCELLA
 		return tokenString;
 	}
-
+	/*fatto da me inizio*/
+	@Override //controlla: da mettere o no???
+	public boolean boolValue() {
+		checkValidToken(BOOL);
+		return boolValue;
+	}
+	/*fatto da me fine*/
 	@Override
 	public int intValue() {
 //		System.out.println("INIZIO (StreamTokenizer) intValue"); //CANCELLA
