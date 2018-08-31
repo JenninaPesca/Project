@@ -292,6 +292,8 @@ public class StreamParser implements Parser {
 		switch (tokenizer.tokenType()) {
 		default:
 			unexpectedTokenError();
+		case BOOL:
+			return parseBool();
 		case NUM:
 			//System.out.println("FINE (StreamParser) ParseAtom caso NUM"); //CANCELLA
 			//System.out.println("    chiamo parseNum");
@@ -326,10 +328,16 @@ public class StreamParser implements Parser {
 			return parseRoundPar();
 		}
 	}
-
+	/*fatto da me inizio*/
+	private BoolLiteral parseBool() throws ParserException {
+		boolean val = tokenizer.boolValue();
+		consume(BOOL); // or tryNext();
+		return new BoolLiteral(val);
+	}
+	/*fatto da me fine*/
 	private IntLiteral parseNum() throws ParserException {
 		//System.out.println("INIZIO (StreamParser) ParseNUM "); //CANCELLA
-		//System.out.println("	guardo cosa c'è dentro tokenizer.intValue();"); //CANCELLA
+		//System.out.println("	guardo cosa c'Ã¨ dentro tokenizer.intValue();"); //CANCELLA
 		int val = tokenizer.intValue();
 		//System.out.println("	val: "+val); //CANCELLA
 		//System.out.println("     chiamo consume con NUM");
@@ -340,7 +348,7 @@ public class StreamParser implements Parser {
 
 	private Ident parseIdent() throws ParserException {
 		//System.out.println("INIZIO (StreamParser) ParseIdent "); //CANCELLA
-		//System.out.println("	guardo cosa c'è dentro tikenizer.tokenString"); //CANCELLA
+		//System.out.println("	guardo cosa c'Ã¨ dentro tikenizer.tokenString"); //CANCELLA
 		String name = tokenizer.tokenString();
 		//System.out.println("	name: "+name); //CANCELLA
 		//System.out.println("	chiamo consume con IDENT"); //CANCELLA
@@ -352,8 +360,8 @@ public class StreamParser implements Parser {
 	/*fatto da me inizio*/
 	private Not parseNot() throws ParserException {
 		consume(NOT);
-		return new Not(parseAtom()); //controlla: perchè parse atom??
-									//perchè se devo usare operatore binario devo usare le parentesi (per le precedenze) che sono dentro ad atom
+		return new Not(parseAtom()); //controlla: perchÃ¨ parse atom??
+									//perchÃ¨ se devo usare operatore binario devo usare le parentesi (per le precedenze) che sono dentro ad atom
 	}
 	
 	private Opt parseOpt() throws ParserException {
