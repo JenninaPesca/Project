@@ -10,8 +10,8 @@ Prog ::= StmtSeq 'EOF'
  Stmt ::= 'var'? ID '=' Exp | 'print' Exp |  'for' ID ':' Exp '{' StmtSeq '}' | 'if' '('Exp')' '{'StmtSeq'}' ('else' '{' StmtSeq '}')? 
  			| 'do' '{' StmtSeq '}' 'while' '('Exp')'
  ExpSeq ::= Exp (',' ExpSeq)?
- Exp ::= Eq ('&&' Exp)? | Eq
- Eq ::= Prefix ('==' Eq)* | Prefix
+ Exp ::= Equality ('&&' Exp)? | Equality
+ Equality ::= Prefix ('==' Equality)* | Prefix
  Prefix ::= Add ('::' Prefix)* | Add
  Add ::= Mul ('+' Add)* | Mul
  Mul::= Atom ('*' Mul)* | Atom
@@ -124,6 +124,7 @@ public class StreamParser implements Parser {
 			return parseIfElseStmt();
 		case DO:
 			System.out.println("             caso do");
+
 			return parseDoWhileStmt();
 		/*fatto da me fine*/
 		}
@@ -196,13 +197,13 @@ public class StreamParser implements Parser {
 		consume(OPEN_BLOCK);
 		StmtSeq stmts = parseStmtSeq();
 		consume(CLOSE_BLOCK);
-		if(tokenizer.tokenType() == ELSE) {
+		/*if(tokenizer.tokenType() == ELSE) {
 			tryNext();
 			consume(OPEN_BLOCK);
 			StmtSeq stmts2 = parseStmtSeq();
 			consume(CLOSE_BLOCK);
-			return new IfThenElseStmt(exp, stmts, stmts2);
-		}
+			return new IfElseStmt(exp, stmts, stmts2);
+		}*/
 		return new IfThenStmt(exp, stmts);
 	}
 	
@@ -230,7 +231,7 @@ public class StreamParser implements Parser {
 //			System.out.println("	chiamo tryNext");
 			tryNext();
 //			System.out.println("	chiamo parseExp");
-			exp = new And(exp, parseEquality());
+			exp = new LogicAnd(exp, parseEquality());
 		}
 //		System.out.println("FINE (StreamParser) parseExp exp di tipo Prefix: "+ exp);
 		return exp;
@@ -240,7 +241,7 @@ public class StreamParser implements Parser {
 		Exp exp = parsePrefix();
 		while (tokenizer.tokenType() == EQUALITY) {
 			tryNext();
-			exp = new Eq(exp, parsePrefix());
+			exp = new Equality(exp, parsePrefix());
 		}
 		return exp;
 	}
@@ -291,6 +292,8 @@ public class StreamParser implements Parser {
 		switch (tokenizer.tokenType()) {
 		default:
 			unexpectedTokenError();
+		case BOOL:
+			return parseBool();
 		case NUM:
 			//System.out.println("FINE (StreamParser) ParseAtom caso NUM"); //CANCELLA
 			//System.out.println("    chiamo parseNum");
@@ -325,10 +328,16 @@ public class StreamParser implements Parser {
 			return parseRoundPar();
 		}
 	}
-
+	/*fatto da me inizio*/
+	private BoolLiteral parseBool() throws ParserException {
+		boolean val = tokenizer.boolValue();
+		consume(BOOL); // or tryNext();
+		return new BoolLiteral(val);
+	}
+	/*fatto da me fine*/
 	private IntLiteral parseNum() throws ParserException {
 		//System.out.println("INIZIO (StreamParser) ParseNUM "); //CANCELLA
-		//System.out.println("	guardo cosa c'è dentro tokenizer.intValue();"); //CANCELLA
+		//System.out.println("	guardo cosa c'Ã¨ dentro tokenizer.intValue();"); //CANCELLA
 		int val = tokenizer.intValue();
 		//System.out.println("	val: "+val); //CANCELLA
 		//System.out.println("     chiamo consume con NUM");
@@ -339,7 +348,6 @@ public class StreamParser implements Parser {
 
 	private Ident parseIdent() throws ParserException {
 		//System.out.println("INIZIO (StreamParser) ParseIdent "); //CANCELLA
-		//System.out.println("	guardo cosa c'è dentro tikenizer.tokenString"); //CANCELLA
 		String name = tokenizer.tokenString();
 		//System.out.println("	name: "+name); //CANCELLA
 		//System.out.println("	chiamo consume con IDENT"); //CANCELLA
@@ -351,8 +359,8 @@ public class StreamParser implements Parser {
 	/*fatto da me inizio*/
 	private Not parseNot() throws ParserException {
 		consume(NOT);
-		return new Not(parseAtom()); //controlla: perchè parse atom??
-									//perchè se devo usare operatore binario devo usare le parentesi (per le precedenze) che sono dentro ad atom
+		return new Not(parseAtom()); //controlla: perchï¿½ parse atom??
+									//perchï¿½ se devo usare operatore binario devo usare le parentesi (per le precedenze) che sono dentro ad atom
 	}
 	
 	private Opt parseOpt() throws ParserException {

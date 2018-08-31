@@ -19,4 +19,5 @@ public class IntValue extends PrimValue<Integer> {
 	public int asInt() {
 		return value;
 	}
+
 }
