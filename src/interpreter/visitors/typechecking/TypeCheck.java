@@ -78,7 +78,6 @@ public class TypeCheck implements Visitor<Type> {
 	}
 	
 /*fatto da me fine*/
-
 	@Override
 	public Type visitPrintStmt(Exp exp) {
 		exp.accept(this);
@@ -106,9 +105,9 @@ public class TypeCheck implements Visitor<Type> {
 		rest.accept(this);
 		return null;
 	}
-
+  
 	// static semantics of expressions; a type is returned by the visitor
-
+	/*operatori binari*/
 	@Override
 	public Type visitAdd(Exp left, Exp right) {
 		checkBinOp(left, right, INT);

@@ -348,7 +348,6 @@ public class StreamParser implements Parser {
 
 	private Ident parseIdent() throws ParserException {
 		//System.out.println("INIZIO (StreamParser) ParseIdent "); //CANCELLA
-		//System.out.println("	guardo cosa c'� dentro tikenizer.tokenString"); //CANCELLA
 		String name = tokenizer.tokenString();
 		//System.out.println("	name: "+name); //CANCELLA
 		//System.out.println("	chiamo consume con IDENT"); //CANCELLA
