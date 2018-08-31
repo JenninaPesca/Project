@@ -78,6 +78,7 @@ public class TypeCheck implements Visitor<Type> {
 	}
 	
 /*fatto da me fine*/
+
 	@Override
 	public Type visitPrintStmt(Exp exp) {
 		exp.accept(this);
