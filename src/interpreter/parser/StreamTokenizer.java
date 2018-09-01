@@ -22,17 +22,15 @@ public class StreamTokenizer implements Tokenizer {
 	static {
 		// remark: groups must correspond to the ordinal of the corresponding
 		// token type
-		final String boolRegEx = "true | false"; //controlla: espressione regolare da fare o no???
+  	final String boolRegEx = "true | false"; //controlla: espressione regolare da fare o no???
 		final String identRegEx = "([a-zA-Z][a-zA-Z0-9]*)"; // group 1
 		final String numRegEx = "(0|[1-9][0-9]*)"; // group 2
 		final String skipRegEx = "(\\s+|//.*)"; // group 3
-		final String symbolRegEx = "\\+|\\*|=|\\(|\\)|;|,|\\{|\\}|-|::|:|\\[|\\]";
+		final String symbolRegEx = "\\+|\\*|==|=|&&|!|\\(|\\)|;|,|\\{|\\}|-|::|:|\\[|\\]";
 		regEx = boolRegEx + "|" + identRegEx + "|" + numRegEx + "|" + skipRegEx + "|" + symbolRegEx;
 	}
 
 	static {
-		keywords.put("true", BOOL); //fatto da me-- aggiungo la keyword true
-		keywords.put("false", BOOL); //fatto da me-- aggiungo la keyword false
 		keywords.put("for", FOR);
 		keywords.put("print", PRINT);
 		keywords.put("var", VAR);
@@ -84,7 +82,6 @@ public class StreamTokenizer implements Tokenizer {
 //			System.out.println("FINE (StreamTokenizer) checkType ident"); //CANCELLA
 			return;
 		}
-
 		/*fatto da me inizio*/
 		if (scanner.group(BOOL.ordinal()) != null) { // NUM
 			tokenType = BOOL;
@@ -159,7 +156,6 @@ public class StreamTokenizer implements Tokenizer {
 //		System.out.println("FINE (StreamTokenizer) tokenString"); //CANCELLA
 		return tokenString;
 	}
-
 	/*fatto da me inizio*/
 	@Override //controlla: da mettere o no???
 	public boolean boolValue() {
@@ -169,7 +165,6 @@ public class StreamTokenizer implements Tokenizer {
 	/*fatto da me fine*/
 	@Override
 	public int intValue() {
-=======
 //		System.out.println("INIZIO (StreamTokenizer) intValue"); //CANCELLA
 //		System.out.println(" 	chiamo checkvalidtoken con num"); //CANCELLA
 		checkValidToken(NUM);

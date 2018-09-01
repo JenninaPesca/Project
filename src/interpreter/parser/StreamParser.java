@@ -16,7 +16,10 @@ Prog ::= StmtSeq 'EOF'
  Add ::= Mul ('+' Add)* | Mul
  Mul::= Atom ('*' Mul)* | Atom
  Atom ::= '-' Atom | '!' Atom | 'opt' Atom | 'empty' Atom | 'def' Atom | 'get' Atom | '[' ExpSeq ']' | BOOL | BIN | NUM | ID  | '(' Exp ')'
- */
+ 
+ //modifica: Equality nome adeguato a ==??
+ //controlla: grammatica corretta?
+*/
 
 public class StreamParser implements Parser {
 
@@ -121,6 +124,7 @@ public class StreamParser implements Parser {
 			return parseIfElseStmt();
 		case DO:
 			System.out.println("             caso do");
+
 			return parseDoWhileStmt();
 		/*fatto da me fine*/
 		}
@@ -193,13 +197,13 @@ public class StreamParser implements Parser {
 		consume(OPEN_BLOCK);
 		StmtSeq stmts = parseStmtSeq();
 		consume(CLOSE_BLOCK);
-		if(tokenizer.tokenType() == ELSE) {
+		/*if(tokenizer.tokenType() == ELSE) {
 			tryNext();
 			consume(OPEN_BLOCK);
 			StmtSeq stmts2 = parseStmtSeq();
 			consume(CLOSE_BLOCK);
-			return new IfThenElseStmt(exp, stmts, stmts2);
-		}
+			return new IfElseStmt(exp, stmts, stmts2);
+		}*/
 		return new IfThenStmt(exp, stmts);
 	}
 	
@@ -237,7 +241,7 @@ public class StreamParser implements Parser {
 		Exp exp = parsePrefix();
 		while (tokenizer.tokenType() == EQUALITY) {
 			tryNext();
-			exp = new Equality(exp, parsePrefix());
+			exp = new Eq(exp, parsePrefix());
 		}
 		return exp;
 	}
@@ -344,7 +348,6 @@ public class StreamParser implements Parser {
 
 	private Ident parseIdent() throws ParserException {
 		//System.out.println("INIZIO (StreamParser) ParseIdent "); //CANCELLA
-		//System.out.println("	guardo cosa c'è dentro tikenizer.tokenString"); //CANCELLA
 		String name = tokenizer.tokenString();
 		//System.out.println("	name: "+name); //CANCELLA
 		//System.out.println("	chiamo consume con IDENT"); //CANCELLA
@@ -356,8 +359,8 @@ public class StreamParser implements Parser {
 	/*fatto da me inizio*/
 	private Not parseNot() throws ParserException {
 		consume(NOT);
-		return new Not(parseAtom()); //controlla: perchè parse atom??
-									//perchè se devo usare operatore binario devo usare le parentesi (per le precedenze) che sono dentro ad atom
+		return new Not(parseAtom()); //controlla: perch� parse atom??
+									//perch� se devo usare operatore binario devo usare le parentesi (per le precedenze) che sono dentro ad atom
 	}
 	
 	private Opt parseOpt() throws ParserException {
