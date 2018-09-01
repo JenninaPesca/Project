@@ -19,16 +19,11 @@ import interpreter.visitors.typechecking.TypecheckerException;
 
 public class Main {
 	public static void main(String[] args) {
-//System.out.println("INIZIO del main"); //CANCELLA
 		try (Tokenizer tokenizer = new StreamTokenizer(
 				args.length > 0 ? new FileReader(args[0]) : new InputStreamReader(System.in))) {
-//System.out.println("creo nuovo parser"); //CANCELLA
 			Parser parser = new StreamParser(tokenizer);
-//System.out.println("creo nuovo prog"); //CANCELLA
 			Prog prog = parser.parseProg();
-//System.out.println("accept new Typechek"); //CANCELLA
 			prog.accept(new TypeCheck());
-//System.out.println("accept new eval"); //CANCELLA
 			prog.accept(new Eval());
 		} catch (ParserException e) {
 			err.println("Syntax error: " + e.getMessage());
@@ -42,6 +37,5 @@ public class Main {
 			err.println("Unexpected error.");
 			e.printStackTrace();
 		}
-//System.out.println("FINE del main"); //CANCELLA
 	}
 }

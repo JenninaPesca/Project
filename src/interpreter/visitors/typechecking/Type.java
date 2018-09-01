@@ -12,12 +12,5 @@ public interface Type {
 			throw new TypecheckerException(toString(), ListType.TYPE_NAME);
 		return ((ListType) this).getElemType();
 	}
-	
-	/*getOptElemType*/
-	default Type getOptElemType() throws TypecheckerException {
-		if (!(this instanceof OptType))
-			throw new TypecheckerException(toString(), OptType.TYPE_NAME);
-		return ((OptType) this).getElemType();
-	}
 
 }
