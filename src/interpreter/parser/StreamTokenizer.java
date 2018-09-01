@@ -15,22 +15,25 @@ public class StreamTokenizer implements Tokenizer {
 									// token
 	private TokenType tokenType;
 	private String tokenString;
-	private boolean boolValue;
+	private int binValue; //--fatto da me--
 	private int intValue;
 	private final Scanner scanner;
 
+	
 	static {
 		// remark: groups must correspond to the ordinal of the corresponding
 		// token type
-  	final String boolRegEx = "true | false"; //controlla: espressione regolare da fare o no???
-		final String identRegEx = "([a-zA-Z][a-zA-Z0-9]*)"; // group 1
-		final String numRegEx = "(0|[1-9][0-9]*)"; // group 2
-		final String skipRegEx = "(\\s+|//.*)"; // group 3
-		final String symbolRegEx = "\\+|\\*|==|=|&&|!|\\(|\\)|;|,|\\{|\\}|-|::|:|\\[|\\]";
-		regEx = boolRegEx + "|" + identRegEx + "|" + numRegEx + "|" + skipRegEx + "|" + symbolRegEx;
+		final String identRegEx = "([a-zA-Z][a-zA-Z0-9]*)"; // group 2
+		final String binNumRegEx = "(0[bB][01]+)"; //--fatto da me-- espressione regolare per i numeri binari group1
+		final String numRegEx = "(0|[1-9][0-9]*)"; // group 3
+		final String skipRegEx = "(\\s+|//.*)"; // group 4
+		final String symbolRegEx = "\\+|\\*|=|\\(|\\)|;|,|\\{|\\}|-|::|:|\\[|\\]";
+		regEx = identRegEx + "|" + binNumRegEx + "|"  /*fatto da me*/ + numRegEx + "|" + skipRegEx + "|" + symbolRegEx;
 	}
 
 	static {
+		keywords.put("true", BOOL); //fatto da me-- aggiungo la keyword true
+		keywords.put("false", BOOL); //fatto da me-- aggiungo la keyword false
 		keywords.put("for", FOR);
 		keywords.put("print", PRINT);
 		keywords.put("var", VAR);
@@ -70,41 +73,60 @@ public class StreamTokenizer implements Tokenizer {
 //		System.out.println("FINE (StreamTokenizer) costruttore"); //CANCELLA
 	}
 
+/*fatto da me*/
+//metodo che converte la stringa binaria in un numero intero
+	private int parseBin(String tokenString) {
+		int i=tokenString.length();
+		int binValue = 0;
+		while (i>2) {
+			char c = tokenString.charAt(i-1); //i-1 perch� l'ultimo indice � la lunghezza della stringa-1 dato che gli indici iniziano da 0 e la lunghezza da 1
+			if (c == '1') {
+				binValue = (int) (binValue + Math.pow(2.0, (double)((tokenString.length())-i)));
+			}
+			i--;			
+		}
+		return binValue;
+	}
+	
 	private void checkType() {
 //		System.out.println("INIZIO(StreamTokenizer) checkType"); //CANCELLA
 //		System.out.println(" 	chiamo scanner.group"); //CANCELLA
 		tokenString = scanner.group();
 //		System.out.println(" 	chiamo scanner.group con "+ IDENT.ordinal()); //CANCELLA
 		if (scanner.group(IDENT.ordinal()) != null) { // IDENT or a keyword
-			tokenType = keywords.get(tokenString);
+			tokenType = keywords.get(tokenString); //controlla se � una keyworld ->se non � una keyword allora � un ident
 			if (tokenType == null)
 				tokenType = IDENT;
-//			System.out.println("FINE (StreamTokenizer) checkType ident"); //CANCELLA
+System.out.println("FINE (StreamTokenizer) checkType ident"); //CANCELLA
 			return;
 		}
-		/*fatto da me inizio*/
-		if (scanner.group(BOOL.ordinal()) != null) { // NUM
-			tokenType = BOOL;
-			boolValue = Boolean.parseBoolean(tokenString);
-			System.out.println("       boolVallue: "+boolValue);
-			System.out.println("FINE (StreamTokenizer) checkType num"); //CANCELLA
+		/*--fatto da me-- inizio*/
+System.out.println("	chiamo scanner.group con "+ BIN.ordinal()); //CANCELLA
+		if (scanner.group(BIN.ordinal()) != null) { // BIN
+			tokenType = BIN;
+System.out.println("	prima di integer.parsebin");
+			binValue = parseBin(tokenString); //modifica: il metodo deve essere dentro la classe BinLiteral??
+														 // secondo me no perch� non modifica le variabili della classe quindi lo metto come metodo in questa classe
+System.out.println("	BIN VALUE"+binValue);
+System.out.println("FINE (StreamTokenizer) checkType bin"); //CANCELLA
 			return;
-		}/*fatto da me fine*/
-		//System.out.println(" 	chiamo scanner.group con "+ NUM.ordinal()); //CANCELLA
+		}
+		/*--fatto da me-- fine*/
+System.out.println(" 	chiamo scanner.group con "+ NUM.ordinal()); //CANCELLA
 		if (scanner.group(NUM.ordinal()) != null) { // NUM
 			tokenType = NUM;
 			intValue = Integer.parseInt(tokenString);
-			System.out.println("FINE (StreamTokenizer) checkType num"); //CANCELLA
+System.out.println("FINE (StreamTokenizer) checkType num"); //CANCELLA
 			return;
 		}
 		//System.out.println(" 	chiamo scanner.group con "+ SKIP.ordinal()); //CANCELLA
 		if (scanner.group(SKIP.ordinal()) != null) { // SKIP
 			tokenType = SKIP;
-			System.out.println("FINE (StreamTokenizer) checkType skip"); //CANCELLA
+//			System.out.println("FINE (StreamTokenizer) checkType skip"); //CANCELLA
 			return;
 		}
 		tokenType = symbols.get(tokenString); // a symbol
-		System.out.println("FINE (StreamTokenizer) checkType symbol"); //CANCELLA
+//		System.out.println("FINE (StreamTokenizer) checkType symbol"); //CANCELLA
 		if (tokenType == null)
 			throw new AssertionError("Fatal error");
 	}
@@ -116,9 +138,8 @@ public class StreamTokenizer implements Tokenizer {
 			tokenType = null;
 			tokenString = "";
 			try {
-				//osserva: caso eof, perch� non lo prende??
 				if (hasNext && !scanner.hasNext()) {
-					System.out.println("EOF");
+//					System.out.println("EOF");
 					hasNext = false;
 					return tokenType = EOF;
 				}
@@ -156,11 +177,13 @@ public class StreamTokenizer implements Tokenizer {
 //		System.out.println("FINE (StreamTokenizer) tokenString"); //CANCELLA
 		return tokenString;
 	}
-	/*fatto da me inizio*/
-	@Override //controlla: da mettere o no???
-	public boolean boolValue() {
-		checkValidToken(BOOL);
-		return boolValue;
+	/*--fatto da me inizio--*/
+	public int binValue() {
+		System.out.println("INIZIO (StreamTokenizer) intValue"); //CANCELLA
+		System.out.println(" 	chiamo checkvalidtoken con num"); //CANCELLA
+		checkValidToken(BIN);
+		System.out.println("FINE (StreamTokenizer) intValue"); //CANCELLA
+		return binValue;
 	}
 	/*fatto da me fine*/
 	@Override
