@@ -64,7 +64,7 @@ public class StreamScanner implements Scanner {
 		String line;
 		if (matcher.regionStart() == matcher.regionEnd()) {
 			try {
-//				System.out.println(" 	aspetta input"); //CANCELLA
+				System.out.println(" 	aspetta input"); //CANCELLA
 				line = buffReader.readLine();
 //				System.out.println(" 	line: "+line); //CANCELLA
 			} catch (IOException e) {

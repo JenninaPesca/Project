@@ -13,11 +13,6 @@ public interface Type {
 		return ((ListType) this).getElemType();
 	}
 	
-	/*getOptElemType*/
-	default Type getOptElemType() throws TypecheckerException {
-		if (!(this instanceof OptType))
-			throw new TypecheckerException(toString(), OptType.TYPE_NAME);
-		return ((OptType) this).getElemType();
-	}
+	/*aggiungere getOptElemType*/
 
 }

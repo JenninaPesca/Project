@@ -10,8 +10,8 @@ Prog ::= StmtSeq 'EOF'
  Stmt ::= 'var'? ID '=' Exp | 'print' Exp |  'for' ID ':' Exp '{' StmtSeq '}' | 'if' '('Exp')' '{'StmtSeq'}' ('else' '{' StmtSeq '}')? 
  			| 'do' '{' StmtSeq '}' 'while' '('Exp')'
  ExpSeq ::= Exp (',' ExpSeq)?
- Exp ::= Eq ('&&' Exp)? | Eq
- Eq ::= Prefix ('==' Eq)* | Prefix
+ Exp ::= Equality ('&&' Exp)? | Equality
+ Equality ::= Prefix ('==' Equality)* | Prefix
  Prefix ::= Add ('::' Prefix)* | Add
  Add ::= Mul ('+' Add)* | Mul
  Mul::= Atom ('*' Mul)* | Atom
@@ -77,7 +77,7 @@ public class StreamParser implements Parser {
 	private StmtSeq parseStmtSeq() throws ParserException {
 		//System.out.println("INIZIO (StreamParser) ParseStmtSeq"); //CANCELLA
 		Stmt stmt = parseStmt();
-//		System.out.println("	stmt: "+stmt); //CANCELLA
+		System.out.println("	stmt: "+stmt); //CANCELLA
 		if (tokenizer.tokenType() == STMT_SEP) {
 			//System.out.println("	chiama tryNext"); //CANCELLA
 			tryNext();
@@ -183,12 +183,12 @@ public class StreamParser implements Parser {
 	//fatto da me inizio  modifica:da fare
 	// 'if' '('Exp')' '{'StmtSeq'}' ('else' '{' StmtSeq '}')?
 	private IfThenStmt parseIfElseStmt() throws ParserException {
-//		System.out.println("INIZIO parseIfElseStmt");
+		System.out.println("INIZIO parseIfElseStmt");
 		consume(IF); // or tryNext();
 		consume(OPEN_PAR);
 //		System.out.println("       chiamo parseexp");
 		Exp exp = parseExp();
-//		System.out.println("      consume close:par");
+		System.out.println("      consume close:par");
 		consume(CLOSE_PAR);
 		consume(OPEN_BLOCK);
 		StmtSeq stmts = parseStmtSeq();
@@ -222,7 +222,7 @@ public class StreamParser implements Parser {
 //		System.out.println("INIZIO (StreamParser) parseExp");
 //		System.out.println("	chiamo parseAdd");
 		Exp exp = parseEquality();
-//		System.out.println("	exp: "+exp);
+		System.out.println("	exp: "+exp);
 		if (tokenizer.tokenType() == LOGICAND) {
 //			System.out.println("	chiamo tryNext");
 			tryNext();
@@ -237,7 +237,7 @@ public class StreamParser implements Parser {
 		Exp exp = parsePrefix();
 		while (tokenizer.tokenType() == EQUALITY) {
 			tryNext();
-			exp = new Eq(exp, parsePrefix());
+			exp = new Equality(exp, parsePrefix());
 		}
 		return exp;
 	}
@@ -288,12 +288,8 @@ public class StreamParser implements Parser {
 		switch (tokenizer.tokenType()) {
 		default:
 			unexpectedTokenError();
-		/*--fatto da me-- inizio*/
-		case BIN:
-			System.out.println("FINE (StreamParser) ParseAtom caso BIN"); //CANCELLA
-			System.out.println("    chiamo parseBin");
-			return parseBin();
-		/*--fatto da me-- fine*/
+		case BOOL:
+			return parseBool();
 		case NUM:
 			//System.out.println("FINE (StreamParser) ParseAtom caso NUM"); //CANCELLA
 			//System.out.println("    chiamo parseNum");
@@ -327,30 +323,22 @@ public class StreamParser implements Parser {
 			//System.out.println("    chiamo parseRoundPar");
 			return parseRoundPar();
 		}
-	}	
-	/*--fatto da me-- inizio*/
-	private BinLiteral parseBin() throws ParserException {
-System.out.println("INIZIO (StreamParser) ParseBin "); //CANCELLA
-System.out.println("	guardo cosa c'� dentro tokenizer.intValue();"); //CANCELLA
-		String pref = (tokenizer.tokenString()).substring(0, 2);
-System.out.println("	pref: "+pref);
-		int val = tokenizer.binValue();
-System.out.println("	val: "+val); //CANCELLA
-System.out.println("     chiamo consume con BIN");
-		consume(BIN); // or tryNext();
-System.out.println("FINE (StreamParser) parseNum");
-		return new BinLiteral(pref, val);
 	}
-	/*--fatto da me-- fine*/
-	
+	/*fatto da me inizio*/
+	private BoolLiteral parseBool() throws ParserException {
+		boolean val = tokenizer.boolValue();
+		consume(BOOL); // or tryNext();
+		return new BoolLiteral(val);
+	}
+	/*fatto da me fine*/
 	private IntLiteral parseNum() throws ParserException {
-System.out.println("INIZIO (StreamParser) ParseNUM "); //CANCELLA
-System.out.println("	guardo cosa c'� dentro tokenizer.intValue();"); //CANCELLA
+		//System.out.println("INIZIO (StreamParser) ParseNUM "); //CANCELLA
+		//System.out.println("	guardo cosa c'è dentro tokenizer.intValue();"); //CANCELLA
 		int val = tokenizer.intValue();
-System.out.println("	val: "+val); //CANCELLA
-System.out.println("     chiamo consume con NUM");
+		//System.out.println("	val: "+val); //CANCELLA
+		//System.out.println("     chiamo consume con NUM");
 		consume(NUM); // or tryNext();
-System.out.println("FINE (StreamParser) parseNum");
+		//System.out.println("FINE (StreamParser) parseNum");
 		return new IntLiteral(val);
 	}
 
