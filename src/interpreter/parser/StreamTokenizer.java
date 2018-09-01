@@ -15,6 +15,7 @@ public class StreamTokenizer implements Tokenizer {
 									// token
 	private TokenType tokenType;
 	private String tokenString;
+	private boolean boolValue;
 	private int binValue; //--fatto da me--
 	private int intValue;
 	private final Scanner scanner;
@@ -23,12 +24,13 @@ public class StreamTokenizer implements Tokenizer {
 	static {
 		// remark: groups must correspond to the ordinal of the corresponding
 		// token type
+		final String boolRegEx = "true | false";
 		final String identRegEx = "([a-zA-Z][a-zA-Z0-9]*)"; // group 2
 		final String binNumRegEx = "(0[bB][01]+)"; //--fatto da me-- espressione regolare per i numeri binari group1
 		final String numRegEx = "(0|[1-9][0-9]*)"; // group 3
 		final String skipRegEx = "(\\s+|//.*)"; // group 4
 		final String symbolRegEx = "\\+|\\*|=|\\(|\\)|;|,|\\{|\\}|-|::|:|\\[|\\]";
-		regEx = identRegEx + "|" + binNumRegEx + "|"  /*fatto da me*/ + numRegEx + "|" + skipRegEx + "|" + symbolRegEx;
+		regEx = boolRegEx + "|" + identRegEx + "|" + binNumRegEx + "|"  /*fatto da me*/ + numRegEx + "|" + skipRegEx + "|" + symbolRegEx;
 	}
 
 	static {
